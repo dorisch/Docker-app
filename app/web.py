@@ -8,7 +8,7 @@ app = Quart(__name__)
 
 tasks = {}
 
-@app.route('/api/download/text/<path:url>')
+@app.route('/api/download/text/<path:url>', methods = ['GET'])
 async def download_text(url):
     regex = re.compile(
         r'^(?:http|ftp)s?://'
@@ -25,7 +25,7 @@ async def download_text(url):
     tasks[uid] = asyncio.create_task(workers.text_worker(url))
     return uid
 
-@app.route('/api/download/images/<path:url>')
+@app.route('/api/download/images/<path:url>', methods = ['GET'])
 async def download_images(url):
     regex = re.compile(
         r'^(?:http|ftp)s?://'
@@ -42,7 +42,7 @@ async def download_images(url):
     tasks[uid] = asyncio.create_task(workers.img_worker(url))
     return uid
 
-@app.route('/api/status/<id>')
+@app.route('/api/status/<id>', methods = ['GET'])
 async def status(id):
     isFinished = tasks[id].done()
     if isFinished:
@@ -50,7 +50,7 @@ async def status(id):
     else:
         return 'Results are not ready yet'
 
-@app.route('/api/result/<id>')
+@app.route('/api/result/<id>', methods = ['GET'])
 async def result(id):
     if id not in tasks:
         return 'There is no such task'
